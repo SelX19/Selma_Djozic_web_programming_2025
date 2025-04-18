@@ -10,11 +10,41 @@ class UserDao extends BaseDao
         parent::__construct("users");
     }
 
+    // auxilliary functions (used for business logic later on)
+
+    public function emailExists($email)
+    {
+        $query = "SELECT COUNT(*) as count FROM users WHERE email = :email";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result['count'] > 0;
+    }
+
+    public function hasRelatedData($user_id)
+    {
+        $query = "SELECT COUNT(*) FROM appointments WHERE user_id = :user_id";
+        $stmt = $this->connection->prepare($query);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0; // if having at least one field/column
+    }
+
     //retrieval functions - READ(GET)
     public function getByEmail($email)
     {
         $stmt = $this->connection->prepare('SELECT * FROM users WHERE email=:email');
         $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
+    public function getById($id)
+    {
+        $stmt = $this->connection->prepare('SELECT * FROM users WHERE user_id=:id');
+        $stmt->bindParam(':id', $id);
         $stmt->execute();
         return $stmt->fetch();
     }
@@ -31,6 +61,14 @@ class UserDao extends BaseDao
     {
         $stmt = $this->connection->prepare('SELECT * FROM users WHERE last_name=:last_name');
         $stmt->bindParam(':last_name', $last_name);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function getByRole($role)
+    {
+        $stmt = $this->connection->prepare("SELECT * FROM users WHERE role = :role");
+        $stmt->bindParam(':role', $role);
         $stmt->execute();
         return $stmt->fetchAll();
     }

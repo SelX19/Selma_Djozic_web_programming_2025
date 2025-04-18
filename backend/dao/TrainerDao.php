@@ -131,7 +131,8 @@ class TrainerDao extends BaseDao
             $stmt->bindParam(':user_id', $trainer['user_id']);
             $stmt->bindParam(':trainer_id', $trainer_id);
 
-            return $stmt->execute();
+            $stmt->execute();
+            return true;
         } catch (Exception $e) {
             echo 'Error: ' . $e->getMessage();
             return false;

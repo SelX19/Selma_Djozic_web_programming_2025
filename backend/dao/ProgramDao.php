@@ -12,6 +12,14 @@ class ProgramDao extends BaseDao
 
     //retrieval functions - READ(GET)
 
+    public function getProgramById($programId)
+    {
+        $stmt = $this->connection->prepare('SELECT * FROM programs WHERE program_id=:programId');
+        $stmt->bindParam(':programId', $programId);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
     public function getDescription($name)// get program description by its name
     {
         $stmt = $this->connection->prepare('SELECT description FROM programs WHERE name=:name');

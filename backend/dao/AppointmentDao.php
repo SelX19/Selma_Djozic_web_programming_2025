@@ -12,6 +12,14 @@ class AppointmentDao extends BaseDao
 
     //retrieval functions - READ(GET)
 
+    public function getAppointmentById($appointmentId)
+    {
+        $stmt = $this->connection->prepare('SELECT * FROM appointments WHERE appointment_id=:appointmentId');
+        $stmt->bindParam(':appointmentId', $appointmentId);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
     public function getAppointmentDate($id)
     {
         $stmt = $this->connection->prepare('SELECT appointment_date FROM appointments WHERE user_id=:id');

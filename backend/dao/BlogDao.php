@@ -12,6 +12,14 @@ class BlogDao extends BaseDao
 
     //retrieval functions - READ(GET)
 
+    public function getBlogById($id)
+    {
+        $stmt = $this->connection->prepare('SELECT * FROM blogs WHERE blog_id=:id');
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
     public function getContent($id)// get content by blog id
     {
         $stmt = $this->connection->prepare('SELECT content FROM blogs WHERE blog_id=:id');
