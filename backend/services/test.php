@@ -4,12 +4,12 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Selma_Djozic_web_programming_2025 01.51.58/backend/services/UserController.php';
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Selma_Djozic_web_programming_2025 01.51.58/backend/services/TrainerController.php';
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Selma_Djozic_web_programming_2025 01.51.58/backend/services/ProgramController.php';
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Selma_Djozic_web_programming_2025 01.51.58/backend/services/WorkoutController.php';
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Selma_Djozic_web_programming_2025 01.51.58/backend/services/BlogController.php';
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Selma_Djozic_web_programming_2025 01.51.58/backend/services/AppointmentController.php';
+require_once './UserController.php';
+require_once './TrainerController.php';
+require_once './ProgramController.php';
+require_once './WorkoutController.php';
+require_once './BlogController.php';
+require_once './AppointmentController.php';
 
 $controller = new UserController();
 $controller->handleRequest(); // This shall handle POST, GET, PUT, and DELETE requests.

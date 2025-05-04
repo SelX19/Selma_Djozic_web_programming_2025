@@ -1,7 +1,7 @@
 <?php
 
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Selma_Djozic_web_programming_2025 01.51.58/backend/services/UserService.php';
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Selma_Djozic_web_programming_2025 01.51.58/backend/services/TrainerService.php';
+require_once './UserService.php';
+require_once './TrainerService.php';
 
 class BaseBusinessLogic //containing common methods (login, and signup/regster pages) for regular user, and a trainer (and potentially an admin - if I manage to find time to implement it later on)
 {

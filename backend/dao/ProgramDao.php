@@ -1,6 +1,6 @@
 <?php
 
-require_once 'BaseDao.php';
+require_once './BaseDao.php';
 
 class ProgramDao extends BaseDao
 {

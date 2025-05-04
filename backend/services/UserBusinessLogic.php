@@ -1,7 +1,7 @@
 <?php
 
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Selma_Djozic_web_programming_2025 01.51.58/backend/services/UserService.php';
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Selma_Djozic_web_programming_2025 01.51.58/backend/services/BaseBusinessLogic.php';
+require_once './UserService.php';
+require_once './BaseBusinessLogic.php';
 
 class UserBusinessLogic extends BaseBusinessLogic
 {

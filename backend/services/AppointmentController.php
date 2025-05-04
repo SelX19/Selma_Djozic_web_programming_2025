@@ -1,6 +1,6 @@
 <?php
 
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Selma_Djozic_web_programming_2025 01.51.58/backend/services/AppointmentBusinessLogic.php';
+require_once './AppointmentBusinessLogic.php';
 
 class AppointmentController
 {

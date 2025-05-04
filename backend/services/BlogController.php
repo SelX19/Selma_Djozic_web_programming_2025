@@ -1,6 +1,6 @@
 <?php
 
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Selma_Djozic_web_programming_2025 01.51.58/backend/services/BlogBusinessLogic.php';
+require_once './BlogBusinessLogic.php';
 
 class BlogController
 {

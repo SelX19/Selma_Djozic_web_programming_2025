@@ -1,7 +1,7 @@
 <?php
 
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Selma_Djozic_web_programming_2025 01.51.58/backend/services/BaseService.php';
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Selma_Djozic_web_programming_2025 01.51.58/backend/dao/AppointmentDao.php';
+require_once './BaseService.php';
+require_once './AppointmentDao.php';
 
 class AppointmentService extends BaseService
 {

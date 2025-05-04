@@ -8,9 +8,9 @@ error_reporting(E_ALL);
 
 // some examples testing each CRUD functionality (retrieval, insertion, deletion, and update) on some entities
 
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Selma_Djozic_web_programming_2025 01.51.58/backend/dao/UserDao.php';
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Selma_Djozic_web_programming_2025 01.51.58/backend/dao/TrainerDao.php';
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Selma_Djozic_web_programming_2025 01.51.58/backend/dao/ProgramDao.php';
+require_once './UserDao.php';
+require_once './TrainerDao.php';
+require_once './ProgramDao.php';
 
 
 $userDao = new UserDao();

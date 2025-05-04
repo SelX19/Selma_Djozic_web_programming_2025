@@ -1,6 +1,6 @@
 <?php
 
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Selma_Djozic_web_programming_2025 01.51.58/backend/services/WorkoutService.php';
+require_once './WorkoutService.php';
 
 class WorkoutBusinessLogic
 {
