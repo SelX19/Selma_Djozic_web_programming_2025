@@ -52,6 +52,19 @@ class BaseDao
         return $stmt->execute();
     }
 
+    public function get_by_email($email)
+    {
+        $stmt = $this->connection->prepare("SELECT * FROM {$this->table} WHERE email = :email");
+        $stmt->execute(['email' => $email]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function query_unique($query, $params)
+    {
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute($params);
+        return $stmt->fetch(PDO::FETCH_ASSOC); // Only one row
+    }
 
 }
 

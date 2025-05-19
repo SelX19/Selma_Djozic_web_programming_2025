@@ -28,7 +28,7 @@
  */
 
 // retrieval routes for id as parameter:
-Flight::route('GET /blog/@id', function ($id) {
+Flight::route('GET /blog/@id', function ($id) { // no restriction needed, both user and trainer can access blog details (e.g. content) by its id
     $type = Flight::request()->query['type'];
     if ($type == 'content') {
         Flight::json(Flight::BlogService()->getContent($id)); // get article's content by providing its unique id (if content is provided as query parameter)
@@ -58,7 +58,7 @@ Flight::route('GET /blog/@id', function ($id) {
  */
 
 // retrieve blog's (article's) content by providing author's name as parameter
-Flight::route('GET /blog/@author_name', function ($author_name) {
+Flight::route('GET /blog/@author_name', function ($author_name) { //the same, no restriction is required, nor there shall be
     Flight::json(Flight::BlogService()->getContentByAuthor($author_name));
 });
 
@@ -89,7 +89,8 @@ Flight::route('GET /blog/@author_name', function ($author_name) {
  */
 
 // add a blog article with data inserted by user
-Flight::route('POST /blog', function () {
+Flight::route('POST /blog', function () { //
+    Flight::auth_middleware()->authorizeRole(Roles::USER, Roles::TRAINER);// users and trainers can post a blog/add an article to the blog page
     $data = Flight::request()->data->getData();
     Flight::json(Flight::BlogService()->addArticle($data));
 });
@@ -125,6 +126,7 @@ Flight::route('POST /blog', function () {
 
 // update blog article with specific id with data inserted by user
 Flight::route('PUT /blog/@id', function ($id) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);//Only admin can update an article, since this is a sensitive route, that can impact site's content, so admin is authorized for update actions on requests of user/trainer who posted it
     $data = Flight::request()->data->getData();
     Flight::json(Flight::BlogService()->updateBlog($id, $data));
 });
@@ -150,6 +152,7 @@ Flight::route('PUT /blog/@id', function ($id) {
 
 //delete a blog article at specific id
 Flight::route('DELETE /blog/@id', function ($id) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN); //Only admin can delete an article, since this is a sensitive route, that can impact site's content, so admin is authorized for deletion actions vased on user's/trainer's request
     Flight::json(Flight::BlogService()->deleteArticle($id));
 });
 

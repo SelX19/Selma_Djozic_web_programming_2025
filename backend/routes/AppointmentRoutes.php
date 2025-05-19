@@ -29,6 +29,7 @@
 
 // retrieval routes for id as parameter:
 Flight::route('GET /appointment/@id', function ($id) {
+    // no restriction needed, since all roles shall be able to access appointment's details (e.g. date, and time) by its id
     $type = Flight::request()->query['type'];
     if ($type == 'date') {
         Flight::json(Flight::AppointmentService()->getAppointmentDate($id)); // get appointment's date by providing its unique id (if date is provided as a query parameter)
@@ -62,7 +63,7 @@ Flight::route('GET /appointment/@id', function ($id) {
  */
 
 // retrieve appointment by its status (e.g. active/cancelled/..)
-Flight::route('GET /appointment/@status', function ($status) {
+Flight::route('GET /appointment/@status', function ($status) { //no restriction needed 
     Flight::json(Flight::AppointmentService()->getByStatus($status));
 });
 
@@ -87,7 +88,7 @@ Flight::route('GET /appointment/@status', function ($status) {
  */
 
 // retrieve appointment by its time
-Flight::route('GET /appointment/@time', function ($time) {
+Flight::route('GET /appointment/@time', function ($time) { //no restriction needed (both user and trainer has access to get/view appointment by time)
     Flight::json(Flight::AppointmentService()->getByAppointmentTime($time));
 });
 
@@ -112,7 +113,7 @@ Flight::route('GET /appointment/@time', function ($time) {
  */
 
 // retrieve appointment by its date
-Flight::route('GET /appointment/@date', function ($date) {
+Flight::route('GET /appointment/@date', function ($date) {  //no restriction needed 
     Flight::json(Flight::AppointmentService()->getByAppointmentDate($date));
 });
 
@@ -143,6 +144,7 @@ Flight::route('GET /appointment/@date', function ($date) {
 
 // add an appointment with data inserted by user (via calendar)
 Flight::route('POST /appointment', function () {
+    Flight::auth_middleware()->authorizeRole(Roles::TRAINER); //since appointment is made with specific trainer, I am restricting adding of appointment only to the trainer role, user can only book appointment in the sense of contacting trainer, and then trainer regarding his/her schedule makes an appointment (as in healthcare system with doctors, user/client makes a request, and doctor/someone in hopsital makes an appointment)
     $data = Flight::request()->data->getData();
     Flight::json(Flight::AppointmentService()->addAppointment($data));
 });
@@ -177,6 +179,7 @@ Flight::route('POST /appointment', function () {
 
 // update the appointment with specific id with data inserted by user
 Flight::route('PUT /appointment/@id', function ($id) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN); //However, since updating or deleting an appointment are sensitive routes, we are restricting those to admin only, to prevent e.g. trainers deleting others' appointments, or updating them (malicious behavior)
     $data = Flight::request()->data->getData();
     Flight::json(Flight::AppointmentService()->updateAppointment($id, $data));
 });
@@ -202,6 +205,7 @@ Flight::route('PUT /appointment/@id', function ($id) {
 
 // delete the appointment at specific id
 Flight::route('DELETE /appointment/@id', function ($id) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
     Flight::json(Flight::AppointmentService()->deleteAppointment($id));
 });
 

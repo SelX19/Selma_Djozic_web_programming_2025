@@ -170,6 +170,7 @@ Flight::route('GET /user/@email', function ($email) {
 
 // Add a new user
 Flight::route('POST /user', function () {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN); // only admin can add user to the system/db
     $data = Flight::request()->data->getData(); //data entered by user
     Flight::json(Flight::UserService()->addUser($data));
 });
@@ -207,6 +208,7 @@ Flight::route('POST /user', function () {
 
 // Update user by ID (with specific ID)
 Flight::route('PUT /user/@id', function ($id) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN); // only admin can update data about user with the specified id
     $data = Flight::request()->data->getData(); //data entered by user at the page
     Flight::json(Flight::UserService()->updateUser($id, $data)); // at the id passed in as parameter, with data entered/submitted by user
 });
@@ -232,6 +234,7 @@ Flight::route('PUT /user/@id', function ($id) {
 
 // Delete restaurant by ID (with specific ID)
 Flight::route('DELETE /user/@id', function ($id) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN); // only admin can delete data about user with the specified id
     Flight::json(Flight::UserService()->deleteUser($id));
 });
 

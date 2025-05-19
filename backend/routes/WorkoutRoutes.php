@@ -143,6 +143,7 @@ Flight::route('GET /workout/@id', function ($id) {
 
 // add a workout with data inserted by user
 Flight::route('POST /workout', function () {
+    Flight::auth_middleware()->authorizeRole(Roles::TRAINER, Roles::ADMIN); //Only trainers and admin can add a workout, regular users cannot
     $data = Flight::request()->data->getData();
     Flight::json(Flight::WorkoutService()->addWorkout($data));
 });
@@ -179,6 +180,7 @@ Flight::route('POST /workout', function () {
 
 // update a workout at specific id with data inserted by user
 Flight::route('PUT /workout/@id', function ($id) {
+    Flight::auth_middleware()->authorizeRole(Roles::TRAINER, Roles::ADMIN); //Only trainers and admin can update a workout, regular users cannot
     $data = Flight::request()->data->getData();
     Flight::json(Flight::WorkoutService()->updateWorkout($id, $data));
 });
@@ -204,6 +206,7 @@ Flight::route('PUT /workout/@id', function ($id) {
 
 //delete a workout at specific id
 Flight::route('DELETE /workout/@id', function ($id) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN); //Since this is a sensitive route, affecting the page's content, only admin can delete a workout based on trainer's request, trainers or regular users cannot
     Flight::json(Flight::WorkoutService()->deleteWorkout($id));
 });
 

@@ -21,7 +21,7 @@
  */
 
 //retrieve program by id
-Flight::route('GET /program/@id', function ($id) {
+Flight::route('GET /program/@id', function ($id) { // no restrictions needed
     Flight::json(Flight::ProgramService()->getProgramById($id));
 });
 
@@ -46,7 +46,7 @@ Flight::route('GET /program/@id', function ($id) {
  */
 
 // retrieve a program's description, by searching for it by program's name
-Flight::route('GET /program/@name', function ($name) {
+Flight::route('GET /program/@name', function ($name) { // no restrictions needed
     Flight::json(Flight::ProgramService()->getDescription($name));
 });
 
@@ -75,8 +75,9 @@ Flight::route('GET /program/@name', function ($name) {
 
 // add a program 
 Flight::route('POST /program', function () {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
     $data = Flight::request()->data->getData();
-    Flight::json(Flight::ProgramService()->addProgram($data));
+    Flight::json(Flight::ProgramService()->addProgram($data)); //only admin (if later added) shall be able to add program, as well as to update it, and delete it. User and trainer shall not have these privileges
 });
 
 /**
@@ -107,6 +108,7 @@ Flight::route('POST /program', function () {
 
 // update the program
 Flight::route('PUT /program/@id', function ($id) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
     $data = Flight::request()->data->getData();
     Flight::json(Flight::ProgramService()->updateProgram($id, $data));
 });
@@ -132,6 +134,7 @@ Flight::route('PUT /program/@id', function ($id) {
 
 // delete the program
 Flight::route('DELETE /program/@id', function ($id) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
     $data = Flight::request()->data->getData();
     Flight::json(Flight::ProgramService()->deleteProgram($id));
 });

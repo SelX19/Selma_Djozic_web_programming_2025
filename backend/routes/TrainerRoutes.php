@@ -150,6 +150,7 @@ Flight::route('GET /trainer/@rating', function ($rating) {
 
 // Add a new trainer
 Flight::route('POST /trainer', function () {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN); //only admin can add new trainer to the system
     $data = Flight::request()->data->getData(); //data entered by user
     Flight::json(Flight::TrainerService()->addTrainer($data));
 });
@@ -185,6 +186,7 @@ Flight::route('POST /trainer', function () {
 
 // Update trainer with specific ID
 Flight::route('PUT /trainer/@id', function ($id) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN); // only admin can update trainer data, trainer may request update of his data, but not have permission to access this functionality directly, so not to modify anybody else's data
     $data = Flight::request()->data->getData(); //data entered by user at the page
     Flight::json(Flight::TrainerService()->updateTrainer($id, $data)); // at the id passed in as parameter, with data entered/submitted by user
 });
@@ -210,6 +212,7 @@ Flight::route('PUT /trainer/@id', function ($id) {
 
 // Delete trainer with specific ID
 Flight::route('DELETE /trainer/@id', function ($id) {
+    Flight::auth_middleware()->authorizeRole(Roles::ADMIN); // only admin can delete trainer with specific id
     Flight::json(Flight::TrainerService()->deleteTrainer($id));
 });
 
