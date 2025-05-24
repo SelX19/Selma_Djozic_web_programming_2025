@@ -4,6 +4,7 @@
  * @OA\Get(
  *     path="/appointment/{id}",
  *     tags={"appointments"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get appointment details by ID and type",
  *     description="Returns specific data (date, time, status) or full appointment info based on the query parameter 'type'.",
  *     @OA\Parameter(
@@ -29,7 +30,7 @@
 
 // retrieval routes for id as parameter:
 Flight::route('GET /appointment/@id', function ($id) {
-    // no restriction needed, since all roles shall be able to access appointment's details (e.g. date, and time) by its id
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     $type = Flight::request()->query['type'];
     if ($type == 'date') {
         Flight::json(Flight::AppointmentService()->getAppointmentDate($id)); // get appointment's date by providing its unique id (if date is provided as a query parameter)
@@ -46,14 +47,16 @@ Flight::route('GET /appointment/@id', function ($id) {
  * @OA\Get(
  *     path="/appointment/{status}",
  *     tags={"appointments"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get appointment details by its status",
  *     description="Returns all appointment data based on the query parameter 'status'.",
  *     @OA\Parameter(
  *         name="status",
- *         in="path",
+ *         in="query",
  *         required=true,
  *         description="The status of the appointment",
- *         @OA\Schema(type="string")
+ *         @OA\Schema(type="string",
+ *          enum={"Scheduled", "Cancelled", "Completed"})
  *     ),
  *     @OA\Response(
  *         response=200,
@@ -62,15 +65,32 @@ Flight::route('GET /appointment/@id', function ($id) {
  * )
  */
 
-// retrieve appointment by its status (e.g. active/cancelled/..)
-Flight::route('GET /appointment/@status', function ($status) { //no restriction needed 
+//get appointment by status
+Flight::route('GET /appointment', function () {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
+
+    // Get 'status' from query parameters
+    $status = Flight::request()->query->status;
+
+    if (!$status) {
+        Flight::halt(400, json_encode(['error' => 'Missing status query parameter']));
+    }
+
     Flight::json(Flight::AppointmentService()->getByStatus($status));
 });
+
+/* retrieve appointment by its status (e.g. active/cancelled/..)
+Flight::route('GET /appointment/@status', function ($status) {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
+    Flight::json(Flight::AppointmentService()->getByStatus($status));
+});*/
+
 
 /**
  * @OA\Get(
  *     path="/appointment/{time}",
  *     tags={"appointments"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get appointment details by the exact time of the appointment",
  *     description="Returns all appointment data based on the query parameter 'time'.",
  *     @OA\Parameter(
@@ -88,7 +108,8 @@ Flight::route('GET /appointment/@status', function ($status) { //no restriction 
  */
 
 // retrieve appointment by its time
-Flight::route('GET /appointment/@time', function ($time) { //no restriction needed (both user and trainer has access to get/view appointment by time)
+Flight::route('GET /appointment/@time', function ($time) {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::AppointmentService()->getByAppointmentTime($time));
 });
 
@@ -96,6 +117,7 @@ Flight::route('GET /appointment/@time', function ($time) { //no restriction need
  * @OA\Get(
  *     path="/appointment/{date}",
  *     tags={"appointments"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get appointment details by the exact date of the appointment",
  *     description="Returns all appointment data based on the query parameter 'date'.",
  *     @OA\Parameter(
@@ -103,7 +125,7 @@ Flight::route('GET /appointment/@time', function ($time) { //no restriction need
  *         in="path",
  *         required=true,
  *         description="The date of the appointment in the format: YYYY-MM-DD",
- *         @OA\Schema(type="string", format="date")
+ *         @OA\Schema(type="string", format="date",  example="2025-04-11")
  *     ),
  *     @OA\Response(
  *         response=200,
@@ -113,14 +135,17 @@ Flight::route('GET /appointment/@time', function ($time) { //no restriction need
  */
 
 // retrieve appointment by its date
-Flight::route('GET /appointment/@date', function ($date) {  //no restriction needed 
+Flight::route('GET /appointment/@date', function ($date) {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']);
     Flight::json(Flight::AppointmentService()->getByAppointmentDate($date));
 });
+
 
 /**
  * @OA\Post(
  *     path="/appointment",
  *     tags={"appointments"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Add a new appointment",
  *     description="Creates a new appointment using the provided data.",
  *     @OA\RequestBody(
@@ -144,7 +169,7 @@ Flight::route('GET /appointment/@date', function ($date) {  //no restriction nee
 
 // add an appointment with data inserted by user (via calendar)
 Flight::route('POST /appointment', function () {
-    Flight::auth_middleware()->authorizeRole(Roles::TRAINER); //since appointment is made with specific trainer, I am restricting adding of appointment only to the trainer role, user can only book appointment in the sense of contacting trainer, and then trainer regarding his/her schedule makes an appointment (as in healthcare system with doctors, user/client makes a request, and doctor/someone in hopsital makes an appointment)
+    Flight::auth_middleware()->authorizeRole('trainer'); //since appointment is made with specific trainer, I am restricting adding of appointment only to the trainer role, user can only book appointment in the sense of contacting trainer, and then trainer regarding his/her schedule makes an appointment (as in healthcare system with doctors, user/client makes a request, and doctor/someone in hopsital makes an appointment)
     $data = Flight::request()->data->getData();
     Flight::json(Flight::AppointmentService()->addAppointment($data));
 });
@@ -153,6 +178,7 @@ Flight::route('POST /appointment', function () {
  * @OA\Put(
  *     path="/appointment/{id}",
  *     tags={"appointments"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Update an appointment by ID",
  *     description="Updates the appointment details using the provided data.",
  *     @OA\Parameter(
@@ -179,7 +205,7 @@ Flight::route('POST /appointment', function () {
 
 // update the appointment with specific id with data inserted by user
 Flight::route('PUT /appointment/@id', function ($id) {
-    Flight::auth_middleware()->authorizeRole(Roles::ADMIN); //However, since updating or deleting an appointment are sensitive routes, we are restricting those to admin only, to prevent e.g. trainers deleting others' appointments, or updating them (malicious behavior)
+    Flight::auth_middleware()->authorizeRole('admin'); //However, since updating or deleting an appointment are sensitive routes, we are restricting those to admin only, to prevent e.g. trainers deleting others' appointments, or updating them (malicious behavior)
     $data = Flight::request()->data->getData();
     Flight::json(Flight::AppointmentService()->updateAppointment($id, $data));
 });
@@ -188,6 +214,7 @@ Flight::route('PUT /appointment/@id', function ($id) {
  * @OA\Delete(
  *     path="/appointment/{id}",
  *     tags={"appointments"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Delete an appointment by ID",
  *     description="Deletes the appointment with the given ID.",
  *     @OA\Parameter(
@@ -205,7 +232,7 @@ Flight::route('PUT /appointment/@id', function ($id) {
 
 // delete the appointment at specific id
 Flight::route('DELETE /appointment/@id', function ($id) {
-    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
+    Flight::auth_middleware()->authorizeRole('admin');
     Flight::json(Flight::AppointmentService()->deleteAppointment($id));
 });
 

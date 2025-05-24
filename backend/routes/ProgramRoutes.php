@@ -4,6 +4,7 @@
  * @OA\Get(
  *     path="/program/{id}",
  *     tags={"programs"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get program details by its id",
  *     description="Returns all program data based on the query parameter 'id'.",
  *     @OA\Parameter(
@@ -21,7 +22,8 @@
  */
 
 //retrieve program by id
-Flight::route('GET /program/@id', function ($id) { // no restrictions needed
+Flight::route('GET /program/@id', function ($id) {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::ProgramService()->getProgramById($id));
 });
 
@@ -29,6 +31,7 @@ Flight::route('GET /program/@id', function ($id) { // no restrictions needed
  * @OA\Get(
  *     path="/program/{name}",
  *     tags={"programs"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get program description by its name",
  *     description="Returns program's description based on the query parameter 'name'.",
  *     @OA\Parameter(
@@ -46,7 +49,8 @@ Flight::route('GET /program/@id', function ($id) { // no restrictions needed
  */
 
 // retrieve a program's description, by searching for it by program's name
-Flight::route('GET /program/@name', function ($name) { // no restrictions needed
+Flight::route('GET /program/@name', function ($name) {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::ProgramService()->getDescription($name));
 });
 
@@ -54,6 +58,7 @@ Flight::route('GET /program/@name', function ($name) { // no restrictions needed
  * @OA\Post(
  *     path="/program",
  *     tags={"programs"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Add a new program",
  *     description="Creates a new program using the provided data.",
  *     @OA\RequestBody(
@@ -75,7 +80,7 @@ Flight::route('GET /program/@name', function ($name) { // no restrictions needed
 
 // add a program 
 Flight::route('POST /program', function () {
-    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
+    Flight::auth_middleware()->authorizeRole('admin');
     $data = Flight::request()->data->getData();
     Flight::json(Flight::ProgramService()->addProgram($data)); //only admin (if later added) shall be able to add program, as well as to update it, and delete it. User and trainer shall not have these privileges
 });
@@ -84,6 +89,7 @@ Flight::route('POST /program', function () {
  * @OA\Put(
  *     path="/program/{id}",
  *     tags={"programs"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Update a program by ID",
  *     description="Updates the program details using the provided data.",
  *     @OA\Parameter(
@@ -108,7 +114,7 @@ Flight::route('POST /program', function () {
 
 // update the program
 Flight::route('PUT /program/@id', function ($id) {
-    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
+    Flight::auth_middleware()->authorizeRole('admin');
     $data = Flight::request()->data->getData();
     Flight::json(Flight::ProgramService()->updateProgram($id, $data));
 });
@@ -117,6 +123,7 @@ Flight::route('PUT /program/@id', function ($id) {
  * @OA\Delete(
  *     path="/program/{id}",
  *     tags={"programs"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Delete a program by ID",
  *     description="Deletes a program with the given ID",
  *     @OA\Parameter(
@@ -134,7 +141,7 @@ Flight::route('PUT /program/@id', function ($id) {
 
 // delete the program
 Flight::route('DELETE /program/@id', function ($id) {
-    Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
+    Flight::auth_middleware()->authorizeRole('admin');
     $data = Flight::request()->data->getData();
     Flight::json(Flight::ProgramService()->deleteProgram($id));
 });

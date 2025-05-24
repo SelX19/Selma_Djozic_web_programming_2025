@@ -11,7 +11,7 @@ class Config
 {
     public static function DB_NAME()
     {
-        return 'my_database';
+        return 'fitness_web';
     }
     public static function DB_PORT()
     {
@@ -23,7 +23,7 @@ class Config
     }
     public static function DB_PASSWORD()
     {
-        return ''; //no password
+        return 'root'; //no password
     }
     public static function DB_HOST()
     {

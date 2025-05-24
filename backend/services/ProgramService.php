@@ -1,7 +1,7 @@
 <?php
 
-require_once './BaseService.php';
-require_once './ProgramDao.php';
+require_once __DIR__ . '/BaseService.php';
+require_once __DIR__ . '/../dao/ProgramDao.php';
 
 class ProgramService extends BaseService
 {
@@ -49,7 +49,7 @@ class ProgramService extends BaseService
     public function updateProgram($program_id, $program)
     {
 
-        $this->dao->updateProgram($program_id, $program);
+        return $this->dao->updateProgram($program_id, $program);
     }
 
 

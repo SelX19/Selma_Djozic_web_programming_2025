@@ -4,6 +4,7 @@
  * @OA\Get(
  *     path="/workout/{workout_name}",
  *     tags={"workouts"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get workout video's URL by its name",
  *     description="Returns workout video's URL based on the query parameter 'workout_name'.",
  *     @OA\Parameter(
@@ -22,6 +23,7 @@
 
 // get videoURL for the given workout, by searching by provided workout name
 Flight::route('GET /workout/@workout_name', function ($workout_name) {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::WorkoutService()->getVideoURL($workout_name));
 });
 
@@ -29,6 +31,7 @@ Flight::route('GET /workout/@workout_name', function ($workout_name) {
  * @OA\Get(
  *     path="/workout/{difficulty}",
  *     tags={"workouts"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get workout details by its specified difficulty",
  *     description="Returns all workout data based on the query parameter 'difficulty'.",
  *     @OA\Parameter(
@@ -47,6 +50,7 @@ Flight::route('GET /workout/@workout_name', function ($workout_name) {
 
 // get workout by provided difficulty (level -> e.g. beginner/medium/advanced)
 Flight::route('GET /workout/@difficulty', function ($difficulty) {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::WorkoutService()->getByDifficulty($difficulty));
 });
 
@@ -54,6 +58,7 @@ Flight::route('GET /workout/@difficulty', function ($difficulty) {
  * @OA\Get(
  *     path="/workout/{duration}",
  *     tags={"workouts"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get workout details by its specified duration ",
  *     description="Returns all workout data based on the query parameter 'duration'.",
  *     @OA\Parameter(
@@ -72,6 +77,7 @@ Flight::route('GET /workout/@difficulty', function ($difficulty) {
 
 // get workout by provided duration 
 Flight::route('GET /workout/@duration', function ($duration) {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::WorkoutService()->getByDuration($duration));
 });
 
@@ -79,6 +85,7 @@ Flight::route('GET /workout/@duration', function ($duration) {
  * @OA\Get(
  *     path="/workout/{id}",
  *     tags={"workouts"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get workout details by ID and type",
  *     description="Returns specific data (description or duration of a workout) or full workout info based on the query parameter 'type'.",
  *     @OA\Parameter(
@@ -104,6 +111,7 @@ Flight::route('GET /workout/@duration', function ($duration) {
 
 // retrieval routes for id as parameter, and different query parameters:
 Flight::route('GET /workout/@id', function ($id) {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     $type = Flight::request()->query['type'];
     if ($type == 'description') {
         Flight::json(Flight::WorkoutService()->getDescription($id)); // get description of a program with specific id
@@ -118,6 +126,7 @@ Flight::route('GET /workout/@id', function ($id) {
  * @OA\Post(
  *     path="/workout",
  *     tags={"workouts"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Add a new workout",
  *     description="Creates a new workout using the provided data.",
  *     @OA\RequestBody(
@@ -143,7 +152,7 @@ Flight::route('GET /workout/@id', function ($id) {
 
 // add a workout with data inserted by user
 Flight::route('POST /workout', function () {
-    Flight::auth_middleware()->authorizeRole(Roles::TRAINER, Roles::ADMIN); //Only trainers and admin can add a workout, regular users cannot
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer']); //Only trainers and admin can add a workout, regular users cannot
     $data = Flight::request()->data->getData();
     Flight::json(Flight::WorkoutService()->addWorkout($data));
 });
@@ -152,6 +161,7 @@ Flight::route('POST /workout', function () {
  * @OA\Put(
  *     path="/workout/{id}",
  *     tags={"workouts"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Update a workout by ID",
  *     description="Updates workout details using the provided data.",
  *     @OA\Parameter(
@@ -180,7 +190,7 @@ Flight::route('POST /workout', function () {
 
 // update a workout at specific id with data inserted by user
 Flight::route('PUT /workout/@id', function ($id) {
-    Flight::auth_middleware()->authorizeRole(Roles::TRAINER, Roles::ADMIN); //Only trainers and admin can update a workout, regular users cannot
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer']); //Only trainers and admin can update a workout, regular users cannot
     $data = Flight::request()->data->getData();
     Flight::json(Flight::WorkoutService()->updateWorkout($id, $data));
 });
@@ -189,6 +199,7 @@ Flight::route('PUT /workout/@id', function ($id) {
  * @OA\Delete(
  *     path="/workout/{id}",
  *     tags={"workouts"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Delete a workout by ID",
  *     description="Deletes a workout with the given ID",
  *     @OA\Parameter(
@@ -206,7 +217,7 @@ Flight::route('PUT /workout/@id', function ($id) {
 
 //delete a workout at specific id
 Flight::route('DELETE /workout/@id', function ($id) {
-    Flight::auth_middleware()->authorizeRole(Roles::ADMIN); //Since this is a sensitive route, affecting the page's content, only admin can delete a workout based on trainer's request, trainers or regular users cannot
+    Flight::auth_middleware()->authorizeRole('admin'); //Since this is a sensitive route, affecting the page's content, only admin can delete a workout based on trainer's request, trainers or regular users cannot
     Flight::json(Flight::WorkoutService()->deleteWorkout($id));
 });
 

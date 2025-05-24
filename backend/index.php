@@ -32,32 +32,33 @@ Flight::register('WorkoutService', 'WorkoutService');
 Flight::register('auth_service', "AuthService");
 Flight::register('auth_middleware', "AuthMiddleware");
 
+//test
+Flight::route("GET /api/", function () {
+    Flight::json([
+        "status" => "OK",
+        "message" => "Welcome to the Fitness API!",
+        "version" => "1.0.0",
+        "timestamp" => date('c')
+    ]);
+});
 
-Flight::route('/*', function () { //the wildcard route acting as a middleware intercepts and checks all routes (*), apart from the auth/login and auth/register - they remain public, while all other routes are protected
+Flight::route('/*', function () {
     if (
         strpos(Flight::request()->url, '/auth/login') === 0 ||
         strpos(Flight::request()->url, '/auth/register') === 0
     ) {
         return TRUE;
     } else {
-        try { // all other routes (all apart from login and register) are protected by middleware - the Authorization token is checked, and decoded using JWT, and the user info is set for later use in routes
-            $auth_header = Flight::request()->getHeader("Authorization");
-
-            if (!$auth_header || !str_starts_with($auth_header, 'Bearer '))
-                Flight::halt(401, "Missing or malformed Authorization header");
-
-            $token = str_replace('Bearer ', '', $auth_header);
-
-            // because many API clients (Postman, frontend apps) use the standard Authorization: Bearer ... format.
-
+        try {
+            $token = Flight::request()->getHeader("Authentication");
             if (Flight::auth_middleware()->verifyToken($token))
                 return TRUE;
-
         } catch (\Exception $e) {
-            Flight::halt(401, $e->getMessage()); //stop the request and send unauthorized response(401) ifdecoding of JWT fails
+            Flight::halt(401, $e->getMessage());
         }
     }
 });
+
 
 // Routes are loaded afterward, so protected routes will obey middleware
 require_once __DIR__ . '/routes/AuthRoutes.php';

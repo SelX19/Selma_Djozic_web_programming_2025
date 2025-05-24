@@ -4,6 +4,7 @@
  * @OA\Get(
  *     path="/user/{id}",
  *     tags={"users"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get user details by ID and type",
  *     description="Returns specific data (phone, role) or full user info based on the query parameter 'type'.",
  *     @OA\Parameter(
@@ -29,6 +30,7 @@
 
 // retrieval methods with the same parameter (@id) - have to specify query parameters to know which method to call, otherwise, if no query parameters are specified, getByid($id) will be called by default
 Flight::route('GET /user/@id', function ($id) {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     $type = Flight::request()->query['type']; // e.g. /user/3?type=phone -> getPhone($id) - for user with specified id
 
     if ($type === 'phone') {
@@ -42,8 +44,50 @@ Flight::route('GET /user/@id', function ($id) {
 
 /**
  * @OA\Get(
+ *     path="/users/profile",
+ *     summary="Get logged-in user's profile",
+ *     tags={"Users"},
+ *     security={{"ApiKeyAuth": {}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="User profile retrieved successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="status", type="string", example="success"),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @OA\Property(property="id", type="integer", example=1),
+ *                 @OA\Property(property="email", type="string", example="user@example.com"),
+ *                 @OA\Property(property="role", type="string", example="user")
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Unauthorized - invalid or missing token",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Missing or malformed Authorization header")
+ *         )
+ *     )
+ * )
+ */
+
+
+Flight::route('GET /users/profile', function () {
+    $user = Flight::get('user'); // This is set in verifyToken()
+    Flight::json([
+        'status' => 'success',
+        'data' => $user
+    ]);
+});
+
+
+/**
+ * @OA\Get(
  *     path="/user/{role}",
  *     tags={"users"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get user details by its role",
  *     description="Returns all user data based on the query parameter 'role'.",
  *     @OA\Parameter(
@@ -62,6 +106,7 @@ Flight::route('GET /user/@id', function ($id) {
 
 // Get a specific user by role
 Flight::route('GET /user/@role', function ($role) {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::UserService()->getByRole($role));
 });
 
@@ -69,6 +114,7 @@ Flight::route('GET /user/@role', function ($role) {
  * @OA\Get(
  *     path="/user/{first_name}",
  *     tags={"users"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get user details by its first name",
  *     description="Returns all user data based on the query parameter 'first_name'.",
  *     @OA\Parameter(
@@ -87,6 +133,7 @@ Flight::route('GET /user/@role', function ($role) {
 
 // Get a specific user by first name
 Flight::route('GET /user/@first_name', function ($first_name) {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::UserService()->getByFirstName($first_name));
 });
 
@@ -94,6 +141,7 @@ Flight::route('GET /user/@first_name', function ($first_name) {
  * @OA\Get(
  *     path="/user/{last_name}",
  *     tags={"users"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get user details by its last name",
  *     description="Returns all user data based on the query parameter 'last_name'.",
  *     @OA\Parameter(
@@ -112,6 +160,7 @@ Flight::route('GET /user/@first_name', function ($first_name) {
 
 // Get a specific user by last name
 Flight::route('GET /user/@last_name', function ($last_name) {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::UserService()->getByLastName($last_name));
 });
 
@@ -119,6 +168,7 @@ Flight::route('GET /user/@last_name', function ($last_name) {
  * @OA\Get(
  *     path="/user/{email}",
  *     tags={"users"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get user details by its email",
  *     description="Returns all user data based on the query parameter 'email'.",
  *     @OA\Parameter(
@@ -137,6 +187,7 @@ Flight::route('GET /user/@last_name', function ($last_name) {
 
 // Get a specific user by email
 Flight::route('GET /user/@email', function ($email) {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::UserService()->getByEmail($email));
 });
 
@@ -144,6 +195,7 @@ Flight::route('GET /user/@email', function ($email) {
  * @OA\Post(
  *     path="/user",
  *     tags={"users"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Add a new user",
  *     description="Creates a new user using the provided data.",
  *     @OA\RequestBody(
@@ -170,7 +222,7 @@ Flight::route('GET /user/@email', function ($email) {
 
 // Add a new user
 Flight::route('POST /user', function () {
-    Flight::auth_middleware()->authorizeRole(Roles::ADMIN); // only admin can add user to the system/db
+    Flight::auth_middleware()->authorizeRole('admin'); // only admin can add user to the system/db
     $data = Flight::request()->data->getData(); //data entered by user
     Flight::json(Flight::UserService()->addUser($data));
 });
@@ -179,6 +231,7 @@ Flight::route('POST /user', function () {
  * @OA\Put(
  *     path="/user/{id}",
  *     tags={"users"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Update a user by ID",
  *     description="Updates the user details using the provided data.",
  *     @OA\Parameter(
@@ -208,7 +261,7 @@ Flight::route('POST /user', function () {
 
 // Update user by ID (with specific ID)
 Flight::route('PUT /user/@id', function ($id) {
-    Flight::auth_middleware()->authorizeRole(Roles::ADMIN); // only admin can update data about user with the specified id
+    Flight::auth_middleware()->authorizeRole('admin'); // only admin can update data about user with the specified id
     $data = Flight::request()->data->getData(); //data entered by user at the page
     Flight::json(Flight::UserService()->updateUser($id, $data)); // at the id passed in as parameter, with data entered/submitted by user
 });
@@ -217,6 +270,7 @@ Flight::route('PUT /user/@id', function ($id) {
  * @OA\Delete(
  *     path="/user/{id}",
  *     tags={"users"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Delete a user by ID",
  *     description="Deletes a user with the given ID",
  *     @OA\Parameter(
@@ -234,7 +288,7 @@ Flight::route('PUT /user/@id', function ($id) {
 
 // Delete restaurant by ID (with specific ID)
 Flight::route('DELETE /user/@id', function ($id) {
-    Flight::auth_middleware()->authorizeRole(Roles::ADMIN); // only admin can delete data about user with the specified id
+    Flight::auth_middleware()->authorizeRole('admin'); // only admin can delete data about user with the specified id
     Flight::json(Flight::UserService()->deleteUser($id));
 });
 

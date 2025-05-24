@@ -1,5 +1,5 @@
 <?php
-require_once 'BaseService.php';
+require_once __DIR__ . '/BaseService.php';
 require_once __DIR__ . '/../dao/AuthDao.php';
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -37,13 +37,16 @@ class AuthService extends BaseService
         $entity['password'] = password_hash($entity['password'], PASSWORD_BCRYPT);
 
 
-        $entity = parent::create($entity);
+        $insert_success = parent::create($entity);
+
+        if ($insert_success === true) {
+            unset($entity["password"]);
+            return ['success' => true, 'data' => $entity];
+        } else {
+            return ['success' => false, 'error' => 'User could not be created.'];
+        }
 
 
-        unset($entity['password']);
-
-
-        return ['success' => true, 'data' => $entity];
     }
 
 
@@ -53,8 +56,8 @@ class AuthService extends BaseService
             return ['success' => false, 'error' => 'Email and password are required.'];
         }
 
-
         $user = $this->auth_dao->get_user_by_email($entity['email']);
+
         if (!$user) {
             return ['success' => false, 'error' => 'Invalid username or password.'];
         }
@@ -67,9 +70,10 @@ class AuthService extends BaseService
         //otherwise if successful authentication, JWT token is generated, and valid for 24 hours
         unset($user['password']);
 
+
         $jwt_payload = [
             // instead of 'user' => $user, I am including in the payload only the necessary input user info for the authentication and generating JWT, without passing sensitive data such as password nor including redundant info
-            'id' => $user['id'],
+            'id' => $user['user_id'],
             'email' => $user['email'],
             'role' => $user['role'],
             'iat' => time(),
@@ -90,7 +94,7 @@ class AuthService extends BaseService
             'success' => true,
             'data' => array_merge([
                 'user' => [
-                    'id' => $user['id'],
+                    'id' => $user['user_id'],
                     'email' => $user['email'],
                     'role' => $user['role']
                 ]

@@ -4,6 +4,7 @@
  * @OA\Get(
  *     path="/trainer/{id}",
  *     tags={"trainers"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get trainer details by ID and type",
  *     description="Returns specific trainer's data (specialization, bio, experience, rating) or full trainer info based on the query parameter 'type'.",
  *     @OA\Parameter(
@@ -30,6 +31,7 @@
 // Get a specialization/rating etc. for trainer - depending on what is defined in query paramters, or if nothing is specified as query parameter- find specific trainer by ID
 
 Flight::route('GET /trainer/@id', function ($id) {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     $type = Flight::request()->query['type']; // e.g. /trainer/5?type=specialization
 
     if ($type === 'specialization') {
@@ -51,6 +53,7 @@ Flight::route('GET /trainer/@id', function ($id) {
  * @OA\Get(
  *     path="/trainer/{specialization}",
  *     tags={"trainers"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get trainer details by its specialization",
  *     description="Returns all trainer data based on the query parameter 'specialization'.",
  *     @OA\Parameter(
@@ -69,6 +72,7 @@ Flight::route('GET /trainer/@id', function ($id) {
 
 // Get a specific trainer by specialization
 Flight::route('GET /trainer/@specialization', function ($specialization) {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::TrainerService()->getBySpecialization($specialization));
 });
 
@@ -76,6 +80,7 @@ Flight::route('GET /trainer/@specialization', function ($specialization) {
  * @OA\Get(
  *     path="/trainer/{experience}",
  *     tags={"trainers"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get trainer details by its experience",
  *     description="Returns all trainer data based on the query parameter 'experience'.",
  *     @OA\Parameter(
@@ -94,6 +99,7 @@ Flight::route('GET /trainer/@specialization', function ($specialization) {
 
 // Get a specific trainer by experience
 Flight::route('GET /trainer/@experience', function ($experience) {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::TrainerService()->getByExperience($experience));
 });
 
@@ -101,6 +107,7 @@ Flight::route('GET /trainer/@experience', function ($experience) {
  * @OA\Get(
  *     path="/trainer/{rating}",
  *     tags={"trainers"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Get trainer details by its rating",
  *     description="Returns all trainer data based on the query parameter 'rating'.",
  *     @OA\Parameter(
@@ -119,6 +126,7 @@ Flight::route('GET /trainer/@experience', function ($experience) {
 
 // Get a specific trainer by rating
 Flight::route('GET /trainer/@rating', function ($rating) {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::TrainerService()->getByRating($rating));
 });
 
@@ -126,6 +134,7 @@ Flight::route('GET /trainer/@rating', function ($rating) {
  * @OA\Post(
  *     path="/trainer",
  *     tags={"trainers"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Add a new trainer",
  *     description="Creates a new trainer using the provided data.",
  *     @OA\RequestBody(
@@ -150,7 +159,7 @@ Flight::route('GET /trainer/@rating', function ($rating) {
 
 // Add a new trainer
 Flight::route('POST /trainer', function () {
-    Flight::auth_middleware()->authorizeRole(Roles::ADMIN); //only admin can add new trainer to the system
+    Flight::auth_middleware()->authorizeRole('admin'); //only admin can add new trainer to the system
     $data = Flight::request()->data->getData(); //data entered by user
     Flight::json(Flight::TrainerService()->addTrainer($data));
 });
@@ -159,6 +168,7 @@ Flight::route('POST /trainer', function () {
  * @OA\Put(
  *     path="/trainer/{id}",
  *     tags={"trainers"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Update a trainer by ID",
  *     description="Updates the trainer details using the provided data.",
  *     @OA\Parameter(
@@ -186,7 +196,7 @@ Flight::route('POST /trainer', function () {
 
 // Update trainer with specific ID
 Flight::route('PUT /trainer/@id', function ($id) {
-    Flight::auth_middleware()->authorizeRole(Roles::ADMIN); // only admin can update trainer data, trainer may request update of his data, but not have permission to access this functionality directly, so not to modify anybody else's data
+    Flight::auth_middleware()->authorizeRole('admin'); // only admin can update trainer data, trainer may request update of his data, but not have permission to access this functionality directly, so not to modify anybody else's data
     $data = Flight::request()->data->getData(); //data entered by user at the page
     Flight::json(Flight::TrainerService()->updateTrainer($id, $data)); // at the id passed in as parameter, with data entered/submitted by user
 });
@@ -195,6 +205,7 @@ Flight::route('PUT /trainer/@id', function ($id) {
  * @OA\Delete(
  *     path="/trainer/{id}",
  *     tags={"trainers"},
+ *     security={{"ApiKeyAuth": {}}},
  *     summary="Delete a trainer by ID",
  *     description="Deletes a trainer with the given ID",
  *     @OA\Parameter(
@@ -212,7 +223,7 @@ Flight::route('PUT /trainer/@id', function ($id) {
 
 // Delete trainer with specific ID
 Flight::route('DELETE /trainer/@id', function ($id) {
-    Flight::auth_middleware()->authorizeRole(Roles::ADMIN); // only admin can delete trainer with specific id
+    Flight::auth_middleware()->authorizeRole('admin'); // only admin can delete trainer with specific id
     Flight::json(Flight::TrainerService()->deleteTrainer($id));
 });
 

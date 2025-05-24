@@ -1,6 +1,6 @@
 <?php
 
-require_once './BaseDao.php';
+require_once __DIR__ . '/../dao/BaseDao.php';
 
 class BaseService
 {
@@ -17,8 +17,10 @@ class BaseService
         return $this->dao->getAll();
     }
 
-    public function create($data)
-    {
+
+    public function create(
+        $data
+    ) {
         return $this->dao->insert($data);
     }
 
@@ -38,7 +40,7 @@ class BaseService
             throw new Exception("Invalid email format.");
         }
 
-        if ($this->dao->get_by_email($user['email'])) {
+        if ($this->dao->get_by_email(email: $user['email'])) {
             throw new Exception("Email already exists.");
         }
 

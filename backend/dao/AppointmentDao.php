@@ -1,6 +1,6 @@
 <?php
 
-require_once './BaseDao.php';
+require_once __DIR__ . '/BaseDao.php';
 
 class AppointmentDao extends BaseDao
 {
@@ -22,7 +22,7 @@ class AppointmentDao extends BaseDao
 
     public function getAppointmentDate($id)
     {
-        $stmt = $this->connection->prepare('SELECT appointment_date FROM appointments WHERE user_id=:id');
+        $stmt = $this->connection->prepare('SELECT appointment_date FROM appointments WHERE appointment_id=:id');
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         return $stmt->fetch();
@@ -30,15 +30,19 @@ class AppointmentDao extends BaseDao
 
     public function getByAppointmentDate($appointment_date)
     {
-        $stmt = $this->connection->prepare('SELECT * FROM appointments WHERE appointment_date=:appointment_date');
-        $stmt->bindParam(':appointment_date', $appointment_date);
+        // Make sure to pass only date part, e.g. "2025-04-11"
+        $dateOnly = substr($appointment_date, 0, 10); // trim any time if present
+
+        $stmt = $this->connection->prepare('SELECT * FROM appointments WHERE DATE(appointment_date) = :appointment_date');
+        $stmt->bindParam(':appointment_date', $dateOnly);
         $stmt->execute();
         return $stmt->fetchAll();
     }
 
+
     public function getAppointmentTime($id)
     {
-        $stmt = $this->connection->prepare('SELECT appointment_time FROM appointments WHERE user_id=:id');
+        $stmt = $this->connection->prepare('SELECT appointment_time FROM appointments WHERE appointment_id=:id');
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         return $stmt->fetch();
@@ -54,7 +58,7 @@ class AppointmentDao extends BaseDao
 
     public function getStatus($id)
     {
-        $stmt = $this->connection->prepare('SELECT status FROM appointments WHERE user_id=:id');
+        $stmt = $this->connection->prepare('SELECT status FROM appointments WHERE appointment_id=:id');
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         return $stmt->fetch();
@@ -62,10 +66,15 @@ class AppointmentDao extends BaseDao
 
     public function getByStatus($status)
     {
-        $stmt = $this->connection->prepare('SELECT * FROM appointments WHERE status=:status');
-        $stmt->bindParam(':status', $status);
-        $stmt->execute();
-        return $stmt->fetchAll();
+        try {
+            $stmt = $this->connection->prepare('SELECT * FROM appointments WHERE status = :status');
+            $stmt->bindParam(':status', $status);
+            $stmt->execute();
+            return $stmt->fetchAll();  // will be associative array by default
+        } catch (PDOException $e) {
+            error_log("Database error in getByStatus: " . $e->getMessage());
+            return false;
+        }
     }
 
     // CREATE/INSERT (POST)
