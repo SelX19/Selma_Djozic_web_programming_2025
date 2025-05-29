@@ -1,6 +1,6 @@
 <?php
 
-require_once 'BaseDao.php';
+require_once __DIR__ . '/BaseDao.php';
 
 class TrainerDao extends BaseDao
 {
@@ -22,11 +22,13 @@ class TrainerDao extends BaseDao
 
     public function getBySpecialization($specialization)
     {
-        $stmt = $this->connection->prepare('SELECT * FROM trainers WHERE specialization=:specialization');
+        $specialization = trim($specialization);  // remove whitespace
+        $stmt = $this->connection->prepare('SELECT * FROM trainers WHERE LOWER(specialization) = LOWER(:specialization)');
         $stmt->bindParam(':specialization', $specialization);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
 
     public function getBio($id)
     {
@@ -131,7 +133,8 @@ class TrainerDao extends BaseDao
             $stmt->bindParam(':user_id', $trainer['user_id']);
             $stmt->bindParam(':trainer_id', $trainer_id);
 
-            return $stmt->execute();
+            $stmt->execute();
+            return true;
         } catch (Exception $e) {
             echo 'Error: ' . $e->getMessage();
             return false;

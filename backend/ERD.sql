@@ -188,6 +188,7 @@ CREATE TABLE `users` (
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `phone` varchar(15) DEFAULT NULL,
+  `pricing` varchar(50) DEFAULT NULL,
   `role` enum('client','trainer','admin') DEFAULT 'client',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`user_id`),

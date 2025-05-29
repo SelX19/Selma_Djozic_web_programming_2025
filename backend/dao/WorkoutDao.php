@@ -1,6 +1,6 @@
 <?php
 
-require_once 'BaseDao.php';
+require_once __DIR__ . '/BaseDao.php';
 
 class WorkoutDao extends BaseDao
 {
@@ -11,6 +11,14 @@ class WorkoutDao extends BaseDao
     }
 
     //retrieval functions - READ(GET)
+
+    public function getWorkoutById($id)
+    {
+        $stmt = $this->connection->prepare('SELECT * FROM workouts WHERE workout_id=:id');
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
 
     public function getDescription($id)// get workout description by its id
     {
@@ -31,6 +39,14 @@ class WorkoutDao extends BaseDao
     public function getDuration($id)// get workout duration by its id
     {
         $stmt = $this->connection->prepare('SELECT duration FROM workouts WHERE workout_id=:id');
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
+    public function getById($id)// get workout by its id
+    {
+        $stmt = $this->connection->prepare('SELECT * FROM workouts WHERE workout_id=:id');
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         return $stmt->fetch();

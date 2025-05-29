@@ -1,6 +1,6 @@
 <?php
 
-require_once 'BaseDao.php';
+require_once __DIR__ . '/BaseDao.php';
 
 class ProgramDao extends BaseDao
 {
@@ -11,6 +11,14 @@ class ProgramDao extends BaseDao
     }
 
     //retrieval functions - READ(GET)
+
+    public function getProgramById($programId)
+    {
+        $stmt = $this->connection->prepare('SELECT * FROM programs WHERE program_id=:programId');
+        $stmt->bindParam(':programId', $programId);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
 
     public function getDescription($name)// get program description by its name
     {
@@ -55,12 +63,11 @@ class ProgramDao extends BaseDao
         try {
             // Prepare update statement
             $stmt = $this->connection->prepare("UPDATE programs SET 
-            program_id = :program_id, 
             name = :name, 
-            description = :description,  
+            description = :description  
             WHERE program_id = :program_id");
 
-            $stmt->bindParam(':program_id', $program['program_id']);
+            $stmt->bindParam(':program_id', $program_id);
             $stmt->bindParam(':name', $program['name']);
             $stmt->bindParam(':description', $program['description']);
 

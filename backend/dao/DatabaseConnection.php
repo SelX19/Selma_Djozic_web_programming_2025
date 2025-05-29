@@ -1,13 +1,8 @@
 <?php
 
+require_once __DIR__ . '/../config.php';
 class Database
 {
-    private static $host = 'localhost';
-    private static $dbName = 'my_database';
-
-    private static $username = 'root';
-    private static $password = '';
-
     private static $connection = null;
 
 
@@ -17,9 +12,9 @@ class Database
 
             try {
                 self::$connection = new PDO(
-                    "mysql:host=" . self::$host . ";dbname=" . self::$dbName,
-                    self::$username,
-                    self::$password,
+                    "mysql:host=" . Config::DB_HOST() . ";dbname=" . Config::DB_NAME(),
+                    Config::DB_USER(),
+                    Config::DB_PASSWORD(),
                     [
                         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC

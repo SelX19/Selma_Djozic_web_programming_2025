@@ -6,8 +6,94 @@
 * License: https://bootstrapmade.com/license/
 */
 
-(function() {
+(function () {
   "use strict";
+
+  /**handling login and signup with AJAX fetch() */
+
+  // Login Form Handler
+  document.getElementById("logIn").addEventListener("submit", async function (e) {
+    e.preventDefault(); // prevent form reload
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    try {
+      const res = await fetch("http://localhost/Selma_Djozic_web_programming_2025 01.51.58/backend/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (!res.ok) throw new Error("Login failed");
+
+      const data = await res.json();
+      localStorage.setItem("token", data.token); // Save token
+
+      alert("Login successful!");
+      // Redirect or fetch protected data
+      fetchUserProfile();
+
+    } catch (err) {
+      alert(err.message);
+    }
+  });
+
+
+  async function fetchUserProfile() {
+    const token = localStorage.getItem("token");
+
+    try {
+      const res = await fetch("http://localhost/Selma_Djozic_web_programming_2025 01.51.58/users/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch profile");
+
+      const profile = await res.json();
+      console.log("Profile Data:", profile);
+      // Display user info on page
+
+    } catch (err) {
+      alert(err.message);
+    }
+  }
+
+  // Register Form Handler
+  document.getElementById("signUp").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const first_name = document.getElementById("first_name").value;
+    const last_name = document.getElementById("last_name").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const role = document.getElementById("role").value;
+    const pricing = document.getElementById("pricing").value;
+    const phone = document.getElementById("phone").value;
+
+    try {
+      const res = await fetch("http://localhost/Selma_Djozic_web_programming_2025 01.51.58/backend/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ first_name, last_name, email, password, role, pricing, phone })
+      });
+
+      if (!res.ok) throw new Error("Registration failed");
+
+      const data = await res.json();
+      alert("Registration successful. You can now log in.");
+
+    } catch (err) {
+      alert(err.message);
+    }
+  });
+
 
   /**
    * Apply .scrolled class to the body as the page is scrolled down
@@ -52,7 +138,7 @@
    * Toggle mobile nav dropdowns
    */
   document.querySelectorAll('.navmenu .toggle-dropdown').forEach(navmenu => {
-    navmenu.addEventListener('click', function(e) {
+    navmenu.addEventListener('click', function (e) {
       e.preventDefault();
       this.parentNode.classList.toggle('active');
       this.parentNode.nextElementSibling.classList.toggle('dropdown-active');
@@ -105,7 +191,7 @@
    * Init swiper sliders
    */
   function initSwiper() {
-    document.querySelectorAll(".init-swiper").forEach(function(swiperElement) {
+    document.querySelectorAll(".init-swiper").forEach(function (swiperElement) {
       let config = JSON.parse(
         swiperElement.querySelector(".swiper-config").innerHTML.trim()
       );
@@ -137,7 +223,7 @@
   /**
    * Correct scrolling position upon page load for URLs containing hash links.
    */
-  window.addEventListener('load', function(e) {
+  window.addEventListener('load', function (e) {
     if (window.location.hash) {
       if (document.querySelector(window.location.hash)) {
         setTimeout(() => {
