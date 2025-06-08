@@ -30,6 +30,8 @@
     <link href="assets/css/main.css" rel="stylesheet">
     <!-- SPAPP CSS File -->
     <link href="assets/css/spapp.css" rel="stylesheet">
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
 </head>
 
@@ -45,6 +47,13 @@
                 <h1 class="sitename">Body Boost</h1>
             </a>
 
+            <!-- Profile Icon on the Left -->
+            <div class="profile-button">
+                <a href="#admin-dashboard">
+                    <img src="assets/img/profile_icon.png" alt="profile icon" class="profile-icon" id="profile-btn">
+                </a>
+            </div>
+
             <nav id="navmenu" class="navmenu">
                 <ul>
                     <li><a href="#home" class="active">Home</a></li>
@@ -56,7 +65,7 @@
                 </ul>
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
             </nav>
-            <a class="btn-getstarted" href="index.html#logIn">Log In</a>
+            <a id="loginBtn" class="btn-getstarted" href="index.html#logIn">Log In</a>
         </div>
     </header>
 
@@ -208,8 +217,23 @@
     <script src="assets/js/jquery.min.js"></script>
 
     <script src="assets/js/jquery.spapp.min.js"></script>
+
+
+    <!-- Validation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+    <!-- jQuery BlockUI -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <!--Toastr js-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+
+
     <!-- Main JS File -->
     <script src="assets/js/main.js"></script>
+    <script src="utils/rest-client.js"></script>
+    <script src="utils/utils.js"></script>
+    <script src="services/user-service.js"></script>
+
 
     <script>
         var app = $.spapp({
@@ -219,6 +243,33 @@
         );
 
         app.run();
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            const loginBtn = $("#loginBtn");
+
+            // Set initial state
+            if (Utils.isLoggedIn()) {
+                loginBtn.text("Log Out");
+                $("#profile-btn").show();
+            } else {
+                loginBtn.text("Log In");
+                $("#profile-btn").hide();
+            }
+
+            loginBtn.on("click", function () {
+                if (Utils.isLoggedIn()) {
+                    // Sign out flow
+                    localStorage.removeItem("user_token");
+                    loginBtn.text("Log In");
+                    window.location.href = "#/";
+                } else {
+                    // Redirect to login page
+                    window.location.href = "#logIn";
+                }
+            });
+        });
     </script>
 
 </body>

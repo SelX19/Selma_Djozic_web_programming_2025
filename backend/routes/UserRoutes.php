@@ -2,6 +2,32 @@
 
 /**
  * @OA\Get(
+ *     path="/users",
+ *     tags={"users"},
+ *     security={{"ApiKeyAuth": {}}},
+ *     summary="Get all users",
+ *     description="Returns a list of all users in the system.",
+ *     @OA\Response(
+ *         response=200,
+ *         description="List of users",
+ *         @OA\JsonContent(
+ *             type="array",
+ *             @OA\Items(ref="#/components/schemas/User")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Unauthorized"
+ *     )
+ * )
+ */
+Flight::route('GET /users', function () {
+    Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // Only admins should retrieve all users
+    Flight::json(Flight::UserService()->getAll());
+});
+
+/**
+ * @OA\Get(
  *     path="/user/{id}",
  *     tags={"users"},
  *     security={{"ApiKeyAuth": {}}},
@@ -85,7 +111,7 @@ Flight::route('GET /users/profile', function () {
 
 /**
  * @OA\Get(
- *     path="/user/{role}",
+ *     path="/user/role/{role}",
  *     tags={"users"},
  *     security={{"ApiKeyAuth": {}}},
  *     summary="Get user details by its role",
@@ -105,14 +131,14 @@ Flight::route('GET /users/profile', function () {
  */
 
 // Get a specific user by role
-Flight::route('GET /user/@role', function ($role) {
+Flight::route('GET /user/role/@role', function ($role) {
     Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::UserService()->getByRole($role));
 });
 
 /**
  * @OA\Get(
- *     path="/user/{first_name}",
+ *     path="/user/first_name/{first_name}",
  *     tags={"users"},
  *     security={{"ApiKeyAuth": {}}},
  *     summary="Get user details by its first name",
@@ -132,14 +158,14 @@ Flight::route('GET /user/@role', function ($role) {
  */
 
 // Get a specific user by first name
-Flight::route('GET /user/@first_name', function ($first_name) {
+Flight::route('GET /user/first_name/@first_name', function ($first_name) {
     Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::UserService()->getByFirstName($first_name));
 });
 
 /**
  * @OA\Get(
- *     path="/user/{last_name}",
+ *     path="/user/last_name/{last_name}",
  *     tags={"users"},
  *     security={{"ApiKeyAuth": {}}},
  *     summary="Get user details by its last name",
@@ -159,14 +185,14 @@ Flight::route('GET /user/@first_name', function ($first_name) {
  */
 
 // Get a specific user by last name
-Flight::route('GET /user/@last_name', function ($last_name) {
+Flight::route('GET /user/last_name/@last_name', function ($last_name) {
     Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::UserService()->getByLastName($last_name));
 });
 
 /**
  * @OA\Get(
- *     path="/user/{email}",
+ *     path="/user/email/{email}",
  *     tags={"users"},
  *     security={{"ApiKeyAuth": {}}},
  *     summary="Get user details by its email",
@@ -186,7 +212,7 @@ Flight::route('GET /user/@last_name', function ($last_name) {
  */
 
 // Get a specific user by email
-Flight::route('GET /user/@email', function ($email) {
+Flight::route('GET /user/email/@email', function ($email) {
     Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::UserService()->getByEmail($email));
 });

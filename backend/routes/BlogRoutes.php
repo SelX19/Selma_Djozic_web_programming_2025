@@ -41,7 +41,7 @@ Flight::route('GET /blog/@id', function ($id) {
 
 /**
  * @OA\Get(
- *     path="/blog/{author_name}",
+ *     path="/blog/author_name/{author_name}",
  *     tags={"blogs"},
  *     security={{"ApiKeyAuth": {}}},
  *     summary="Get blog details by the author name provided",
@@ -61,7 +61,7 @@ Flight::route('GET /blog/@id', function ($id) {
  */
 
 // retrieve blog's (article's) content by providing author's name as parameter
-Flight::route('GET /blog/@author_name', function ($author_name) {
+Flight::route('GET /blog/author_name/@author_name', function ($author_name) {
     Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::BlogService()->getContentByAuthor($author_name));
 });
