@@ -11,28 +11,33 @@ class Config
 {
     public static function DB_NAME()
     {
-        return 'fitness_web';
+        return Config::get_env("DB_NAME", "fitness_web");
     }
     public static function DB_PORT()
     {
-        return 3306;
+        return Config::get_env("DB_PORT", 3306);
     }
     public static function DB_USER()
     {
-        return 'root'; //username
+        return Config::get_env("DB_USER", "root");
     }
     public static function DB_PASSWORD()
     {
-        return 'root'; //no password
+        return Config::get_env("DB_PASSWORD", "root");
     }
     public static function DB_HOST()
     {
-        return 'localhost'; //'127.0.0.1'
+        return Config::get_env("DB_HOST", "localhost");
+        //'127.0.0.1'
     }
-
 
     public static function JWT_SECRET()
     {
-        return 'myJWTseCreToken567*XZY';
+        return Config::get_env("JWT_SECRET", "myJWTseCreToken567*XZY");
+    }
+
+    public static function get_env($name, $default)
+    {
+        return isset($_ENV[$name]) && trim($_ENV[$name]) != "" ? $_ENV[$name] : $default;
     }
 }
