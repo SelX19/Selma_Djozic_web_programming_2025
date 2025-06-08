@@ -15,8 +15,12 @@ Features:
 
 Technology:
 
-Frontend: HTML, CSS, JavaScript
-Backend: FlightPHP,..
+Frontend: HTML, CSS, JavaScript (with jQuery)
+Backend: FlightPHP
 Database: MySQL
-Authentication: ..
-Hosting: ..
+Authentication and Authorization: using JWT tokens
+Hosting: DigitalOcean
+
+Links to hosted app on Digital Ocean:
+Frontend: https://fitness-app-front-g38r8.ondigitalocean.app/#home;
+Backend: https://fitness-app-q62ra.ondigitalocean.app/
