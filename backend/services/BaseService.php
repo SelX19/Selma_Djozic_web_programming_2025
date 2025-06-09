@@ -17,7 +17,6 @@ class BaseService
         return $this->dao->getAll();
     }
 
-
     public function create(
         $data
     ) {

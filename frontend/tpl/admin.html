@@ -10,8 +10,12 @@
 
     <div class="main-content">
         <div class="header">
-            <h1 id="section-title">Users</h1>
-            <button class="add-btn" onclick="openModal()">+ Add</button>
+            <div>
+                <h1 id="section-title">Users</h1>
+            </div>
+            <div>
+                <button class="add-btn" onclick="AdminUserService.openEditModal(null)">+ Add</button>
+            </div>
         </div>
 
         <div class="item-list">
@@ -23,12 +27,13 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody><!--
                     <tr>
                         <td>1</td>
                         <td>John Doe</td>
                         <td>
-                            <button class="edit-btn">Edit</button>
+                            <button class="edit-btn"
+                                onclick="AdminUserService.openEditModal('${encodeURIComponent(JSON.stringify(user))}')">Edit</button>
                             <button class="delete-btn">Delete</button>
                         </td>
                     </tr>
@@ -36,7 +41,8 @@
                         <td>2</td>
                         <td>Jane Smith</td>
                         <td>
-                            <button class="edit-btn">Edit</button>
+                            <button class="edit-btn"
+                                onclick="AdminUserService.openEditModal('${encodeURIComponent(JSON.stringify(user))}')">Edit</button>
                             <button class="delete-btn">Delete</button>
                         </td>
                     </tr>
@@ -44,7 +50,8 @@
                         <td>3</td>
                         <td>Michael Johnson</td>
                         <td>
-                            <button class="edit-btn">Edit</button>
+                            <button class="edit-btn"
+                                onclick="AdminUserService.openEditModal('${encodeURIComponent(JSON.stringify(user))}')">Edit</button>
                             <button class="delete-btn">Delete</button>
                         </td>
                     </tr>
@@ -52,26 +59,39 @@
                         <td>4</td>
                         <td>Emily Davis</td>
                         <td>
-                            <button class="edit-btn">Edit</button>
+                            <button class="edit-btn"
+                                onclick="AdminUserService.openEditModal('${encodeURIComponent(JSON.stringify(user))}')">Edit</button>
                             <button class="delete-btn">Delete</button>
                         </td>
                     </tr>
-                </tbody>
+                </tbody>-->
             </table>
         </div>
 
     </div>
-
-    <!-- Modal -->
-    <div id="modal" class="modal hidden">
+    <!--user modal-->
+    <div id="addOrEditUserModal" class="modal hidden">
         <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <form id="data-form">
-                <h2 id="form-title">Add Item</h2>
-                <input type="text" name="name" placeholder="Name" required />
-                <input type="email" name="email" placeholder="Email" class="email-field" />
-                <button type="submit">Save</button>
+            <span class="close" onclick="AdminUserService.closeModal()">&times;</span>
+            <h2 id="form-title">Add User</h2>
+            <form id="addOrEditUserForm">
+                <input type="text" name="first_name" id="first_name" placeholder="First Name" required><br>
+                <input type="text" name="last_name" id="last_name" placeholder="Last Name" required><br>
+                <input type="email" name="email" id="email" placeholder="Email" required><br>
+                <input type="text" id="specialization" placeholder="Specialization" required><br>
+                <input type="number" id="experience" placeholder="Experience (years)" required><br>
+                <textarea id="bio" placeholder="Bio" required></textarea><br>
+                <input type="number" id="rating" placeholder="Rating" step="0.5" min="0" max="5" required><br>
+                <button type="submit" id="form-submit-btn">Add</button>
             </form>
         </div>
     </div>
+
 </section>
+
+</section> <!-- End of Log In Section -->
+<script src="utils/constants.js"></script>
+<script src="services/admin-service.js"></script>
+<script>
+    AdminUserService.init();
+</script>

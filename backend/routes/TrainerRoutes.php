@@ -51,7 +51,7 @@ Flight::route('GET /trainer/@id', function ($id) {
 
 /**
  * @OA\Get(
- *     path="/trainer/{specialization}",
+ *     path="/trainer/specialization/{specialization}",
  *     tags={"trainers"},
  *     security={{"ApiKeyAuth": {}}},
  *     summary="Get trainer details by its specialization",
@@ -71,14 +71,14 @@ Flight::route('GET /trainer/@id', function ($id) {
  */
 
 // Get a specific trainer by specialization
-Flight::route('GET /trainer/@specialization', function ($specialization) {
+Flight::route('GET /trainer/specialization/@specialization', function ($specialization) {
     Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::TrainerService()->getBySpecialization($specialization));
 });
 
 /**
  * @OA\Get(
- *     path="/trainer/{experience}",
+ *     path="/trainer/experience/{experience}",
  *     tags={"trainers"},
  *     security={{"ApiKeyAuth": {}}},
  *     summary="Get trainer details by its experience",
@@ -98,14 +98,14 @@ Flight::route('GET /trainer/@specialization', function ($specialization) {
  */
 
 // Get a specific trainer by experience
-Flight::route('GET /trainer/@experience', function ($experience) {
+Flight::route('GET /trainer/experience/@experience', function ($experience) {
     Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::TrainerService()->getByExperience($experience));
 });
 
 /**
  * @OA\Get(
- *     path="/trainer/{rating}",
+ *     path="/trainer/rating/{rating}",
  *     tags={"trainers"},
  *     security={{"ApiKeyAuth": {}}},
  *     summary="Get trainer details by its rating",
@@ -125,7 +125,7 @@ Flight::route('GET /trainer/@experience', function ($experience) {
  */
 
 // Get a specific trainer by rating
-Flight::route('GET /trainer/@rating', function ($rating) {
+Flight::route('GET /trainer/rating/@rating', function ($rating) {
     Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::TrainerService()->getByRating($rating));
 });

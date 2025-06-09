@@ -1,0 +1,86 @@
+<section id="trainer-dashboard">
+    <div class="sidebar">
+        <h2>Trainer Dashboard</h2>
+        <ul>
+            <li><a href="#/trainer-blog">My Blogs</a></li>
+            <li><a href="#/trainer-workouts">My Workouts</a></li>
+            <li><a href="#/trainer-programs">Programs</a></li>
+            <li><a href="#/trainer-appointments">Appointments</a></li>
+            <li><a href="#/trainer-trainers">Trainers</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <!-- Blog Section -->
+        <div class="header">
+            <h1 id="section-title">My Blogs</h1>
+            <button class="add-btn" onclick="openModal('blog')">+ Add Blog</button>
+        </div>
+
+        <div class="item-list">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Trainer's blogs -->
+                    <tr>
+                        <td>1</td>
+                        <td>Trainer Blog Post</td>
+                        <td>
+                            <button class="edit-btn">Edit</button>
+                            <button class="delete-btn">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Workout Section -->
+        <div class="header" style="margin-top: 40px;">
+            <h1>My Workouts</h1>
+            <button class="add-btn" onclick="openModal('workout')">+ Add Workout</button>
+        </div>
+
+        <div class="item-list">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Workout Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Trainer's workouts -->
+                    <tr>
+                        <td>1</td>
+                        <td>Full Body Workout</td>
+                        <td>
+                            <button class="edit-btn">Edit</button>
+                            <button class="delete-btn">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <form id="data-form">
+                <h2 id="form-title">Add Item</h2>
+                <!-- dynamically change inputs based on blog or workout -->
+                <input type="text" name="title" placeholder="Title / Workout Name" required />
+                <textarea name="content" placeholder="Content / Description" required></textarea>
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+</section>

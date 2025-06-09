@@ -32,15 +32,7 @@ Flight::register('WorkoutService', 'WorkoutService');
 Flight::register('auth_service', "AuthService");
 Flight::register('auth_middleware', "AuthMiddleware");
 
-//test
-Flight::route("GET /api/", function () {
-    Flight::json([
-        "status" => "OK",
-        "message" => "Welcome to the Fitness API!",
-        "version" => "1.0.0",
-        "timestamp" => date('c')
-    ]);
-});
+
 
 Flight::route('/*', function () {
     if (

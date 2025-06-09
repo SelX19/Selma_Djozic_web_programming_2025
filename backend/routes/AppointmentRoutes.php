@@ -45,7 +45,7 @@ Flight::route('GET /appointment/@id', function ($id) {
 
 /**
  * @OA\Get(
- *     path="/appointment/{status}",
+ *     path="/appointment",
  *     tags={"appointments"},
  *     security={{"ApiKeyAuth": {}}},
  *     summary="Get appointment details by its status",
@@ -88,7 +88,7 @@ Flight::route('GET /appointment/@status', function ($status) {
 
 /**
  * @OA\Get(
- *     path="/appointment/{time}",
+ *     path="/appointment/time/{time}",
  *     tags={"appointments"},
  *     security={{"ApiKeyAuth": {}}},
  *     summary="Get appointment details by the exact time of the appointment",
@@ -108,14 +108,14 @@ Flight::route('GET /appointment/@status', function ($status) {
  */
 
 // retrieve appointment by its time
-Flight::route('GET /appointment/@time', function ($time) {
+Flight::route('GET /appointment/time/@time', function ($time) {
     Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::AppointmentService()->getByAppointmentTime($time));
 });
 
 /**
  * @OA\Get(
- *     path="/appointment/{date}",
+ *     path="/appointment/date/{date}",
  *     tags={"appointments"},
  *     security={{"ApiKeyAuth": {}}},
  *     summary="Get appointment details by the exact date of the appointment",
@@ -135,7 +135,7 @@ Flight::route('GET /appointment/@time', function ($time) {
  */
 
 // retrieve appointment by its date
-Flight::route('GET /appointment/@date', function ($date) {
+Flight::route('GET /appointment/date/@date', function ($date) {
     Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']);
     Flight::json(Flight::AppointmentService()->getByAppointmentDate($date));
 });

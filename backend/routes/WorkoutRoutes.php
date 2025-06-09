@@ -2,7 +2,7 @@
 
 /**
  * @OA\Get(
- *     path="/workout/{workout_name}",
+ *     path="/workout/workout_name/{workout_name}",
  *     tags={"workouts"},
  *     security={{"ApiKeyAuth": {}}},
  *     summary="Get workout video's URL by its name",
@@ -22,14 +22,14 @@
  */
 
 // get videoURL for the given workout, by searching by provided workout name
-Flight::route('GET /workout/@workout_name', function ($workout_name) {
+Flight::route('GET /workout/workout_name/@workout_name', function ($workout_name) {
     Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::WorkoutService()->getVideoURL($workout_name));
 });
 
 /**
  * @OA\Get(
- *     path="/workout/{difficulty}",
+ *     path="/workout/difficulty/{difficulty}",
  *     tags={"workouts"},
  *     security={{"ApiKeyAuth": {}}},
  *     summary="Get workout details by its specified difficulty",
@@ -49,14 +49,14 @@ Flight::route('GET /workout/@workout_name', function ($workout_name) {
  */
 
 // get workout by provided difficulty (level -> e.g. beginner/medium/advanced)
-Flight::route('GET /workout/@difficulty', function ($difficulty) {
+Flight::route('GET /workout/difficulty/@difficulty', function ($difficulty) {
     Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::WorkoutService()->getByDifficulty($difficulty));
 });
 
 /**
  * @OA\Get(
- *     path="/workout/{duration}",
+ *     path="/workout/duration/{duration}",
  *     tags={"workouts"},
  *     security={{"ApiKeyAuth": {}}},
  *     summary="Get workout details by its specified duration ",
@@ -76,7 +76,7 @@ Flight::route('GET /workout/@difficulty', function ($difficulty) {
  */
 
 // get workout by provided duration 
-Flight::route('GET /workout/@duration', function ($duration) {
+Flight::route('GET /workout/duration/@duration', function ($duration) {
     Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::WorkoutService()->getByDuration($duration));
 });

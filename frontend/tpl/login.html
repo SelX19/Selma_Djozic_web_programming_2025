@@ -9,16 +9,17 @@
     <!-- Login Form -->
     <div class="container d-flex justify-content-center">
         <div class="col-md-6 col-lg-4"> <!-- Responsive Width -->
-            <form class="p-4 shadow rounded bg-white"> <!-- Add Shadow & Background -->
+            <form id="logInForm" class="p-4 shadow rounded bg-white" novalidate> <!-- Add Shadow & Background -->
                 <div class="mb-3">
                     <label for="email" class="form-label fw-bold">Email</label>
-                    <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                    <input name="email" type="email" id="email" class="form-control" placeholder="Enter your email"
+                        required>
                 </div>
 
                 <div class="mb-3">
                     <label for="password" class="form-label fw-bold">Password</label>
-                    <input type="password" id="password" class="form-control" placeholder="Enter your password"
-                        required>
+                    <input name="password" type="password" id="password" class="form-control"
+                        placeholder="Enter your password" required>
                 </div>
 
                 <div class="text-center">
@@ -26,5 +27,12 @@
                 </div>
             </form>
         </div>
+
     </div>
+
 </section> <!-- End of Log In Section -->
+<script src="utils/constants.js"></script>
+<script src="services/user-service.js"></script>
+<script>
+    UserService.init();
+</script>

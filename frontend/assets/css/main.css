@@ -2605,3 +2605,21 @@ button:hover {
 .modal-content button[type="submit"]:hover {
   background-color: #2563eb;
 }
+
+/* Profile icon on the left */
+.profile-button {
+  margin-right: 20px;
+}
+
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  /* Makes it rounded */
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.profile-icon:hover {
+  transform: scale(1.1);
+}

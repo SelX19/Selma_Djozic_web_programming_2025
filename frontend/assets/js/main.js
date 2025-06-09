@@ -11,7 +11,7 @@
 
   /**handling login and signup with AJAX fetch() */
 
-  // Login Form Handler
+  /*Login Form Handler
   document.getElementById("logIn").addEventListener("submit", async function (e) {
     e.preventDefault(); // prevent form reload
 
@@ -64,6 +64,9 @@
   }
 
   // Register Form Handler
+  
+*/
+
   document.getElementById("signUp").addEventListener("submit", async function (e) {
     e.preventDefault();
 
@@ -261,3 +264,5 @@
   document.addEventListener('scroll', navmenuScrollspy);
 
 })();
+
+

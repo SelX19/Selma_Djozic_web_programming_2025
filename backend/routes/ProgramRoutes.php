@@ -29,7 +29,7 @@ Flight::route('GET /program/@id', function ($id) {
 
 /**
  * @OA\Get(
- *     path="/program/{name}",
+ *     path="/program/name/{name}",
  *     tags={"programs"},
  *     security={{"ApiKeyAuth": {}}},
  *     summary="Get program description by its name",
@@ -49,7 +49,7 @@ Flight::route('GET /program/@id', function ($id) {
  */
 
 // retrieve a program's description, by searching for it by program's name
-Flight::route('GET /program/@name', function ($name) {
+Flight::route('GET /program/name/@name', function ($name) {
     Flight::auth_middleware()->authorizeRoles(['admin', 'trainer', 'user']); // all roles shall have access
     Flight::json(Flight::ProgramService()->getDescription($name));
 });

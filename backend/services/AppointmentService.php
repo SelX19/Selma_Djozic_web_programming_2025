@@ -43,7 +43,6 @@ class AppointmentService extends BaseService
 
     public function getByAppointmentTime($appointment_time)
     {
-
         return $this->dao->getByAppointmentTime($appointment_time);
     }
 
